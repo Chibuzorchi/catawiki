@@ -16,12 +16,10 @@ export class LoginPage {
     // Homepage "Sign in" button (there are multiple — target the header one)
     this.signInButton = page.getByRole('button', { name: 'Sign in' }).first();
 
-    // Login form fields
     this.emailInput = page.getByLabel('Email address');
     this.passwordInput = page.getByLabel('Password');
     this.submitButton = page.locator('button[type="submit"]').filter({ hasText: 'Sign in' });
 
-    // Profile / Sign out
     this.profileMenu = page.getByTestId('display-username');
     this.signOutButton = page.getByRole('button', { name: 'Sign out' });
   }
@@ -37,7 +35,7 @@ export class LoginPage {
     await this.passwordInput.fill(password);
     await this.submitButton.click();
 
-    // Wait for the profile menu to appear (indicates successful login)
+    // Profile menu only appears post-login
     await this.profileMenu.waitFor({ state: 'visible', timeout: 15_000 });
   }
 
@@ -46,7 +44,7 @@ export class LoginPage {
     await this.signOutButton.waitFor({ state: 'visible', timeout: 5_000 });
     await this.signOutButton.click();
 
-    // Wait for Sign in button to reappear (confirms logout)
+    // Sign in button only appears post-logout
     await this.signInButton.waitFor({ state: 'visible', timeout: 10_000 });
   }
 

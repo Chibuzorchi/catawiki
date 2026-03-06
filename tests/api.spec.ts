@@ -53,7 +53,6 @@ test.describe('API — Cross-Layer Validation', () => {
 
     expect(bidsResponse, 'Bids API response was not intercepted').not.toBeNull();
 
-    // TypeScript type guard
     if (!bidsResponse) {
       throw new Error('Bids API response was not intercepted');
     }
@@ -109,7 +108,7 @@ test.describe('API — Cross-Layer Validation', () => {
             }
           }
         } catch {
-          // ignore
+          // JSON parse errors are non-fatal
         }
       }
     });

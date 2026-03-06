@@ -66,10 +66,6 @@ export class LotPage {
     return { amount, currency };
   }
 
-  /**
-   * Returns the closing time text from the lot-card countdown element.
-   * Shows "12 hours left" etc.
-   */
   async getClosingTime(): Promise<string> {
     const timer = this.page.getByTestId('timer-lot-count-down').first();
     await expect(timer).toBeVisible();
