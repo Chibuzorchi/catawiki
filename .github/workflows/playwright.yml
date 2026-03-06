@@ -1,0 +1,165 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  smoke:
+    name: Smoke Tests (critical path)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox
+      - name: Run smoke tests
+        run: npx playwright test --grep @smoke
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://www.catawiki.com' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-report
+          path: playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-allure-results
+          path: allure-results/
+          retention-days: 14
+
+  sanity:
+    name: Sanity Tests (page health + API)
+    needs: smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox
+      - name: Run sanity tests
+        run: npx playwright test --grep @sanity
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://www.catawiki.com' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sanity-report
+          path: playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sanity-allure-results
+          path: allure-results/
+          retention-days: 14
+
+  regression:
+    name: Regression Tests (full coverage)
+    needs: sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox
+      - name: Run regression tests
+        run: npx playwright test --grep @regression
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://www.catawiki.com' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regression-report
+          path: playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regression-allure-results
+          path: allure-results/
+          retention-days: 14
+
+  a11y:
+    name: Accessibility Audit
+    needs: smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox
+      - name: Run accessibility tests
+        run: npx playwright test --grep @a11y
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://www.catawiki.com' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a11y-report
+          path: playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a11y-allure-results
+          path: allure-results/
+          retention-days: 14
+
+  auth:
+    name: Authenticated Flows (staging only)
+    needs: sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: ${{ vars.CATAWIKI_EMAIL != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox
+      - name: Run authenticated tests
+        run: npx playwright test --grep @auth
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://www.catawiki.com' }}
+          CATAWIKI_EMAIL: ${{ secrets.CATAWIKI_EMAIL }}
+          CATAWIKI_PASSWORD: ${{ secrets.CATAWIKI_PASSWORD }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auth-report
+          path: playwright-report/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: auth-allure-results
+          path: allure-results/
+          retention-days: 14

@@ -1,0 +1,37 @@
+{
+  "name": "catawiki-automation",
+  "version": "1.0.0",
+  "description": "Playwright TypeScript automation suite for Catawiki",
+  "scripts": {
+    "test": "playwright test --project=firefox",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:sanity": "playwright test --grep \"@smoke|@sanity\"",
+    "test:regression": "playwright test --grep \"@smoke|@sanity|@regression\"",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:auth": "playwright test --grep @auth",
+    "test:search": "playwright test tests/search.spec.ts",
+    "test:lot": "playwright test tests/lot-page.spec.ts",
+    "test:api": "playwright test tests/api.spec.ts",
+    "test:chromium": "playwright test --project=chromium --headed",
+    "test:firefox": "playwright test --project=firefox",
+    "allure:generate": "allure generate allure-results -o allure-report --clean",
+    "allure:open": "allure open allure-report",
+    "allure:serve": "allure serve allure-results",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.42.0",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "allure-playwright": "^3.5.0",
+    "dotenv": "^16.4.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.0"
+  }
+}
