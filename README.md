@@ -105,6 +105,9 @@ npx playwright test --project=chromium --headed
 # API tests only
 npx playwright test tests/api.spec.ts --project=firefox
 
+# Flaky tests only (e.g. TC-006 — browser back; skipped in CI due to Akamai)
+npx playwright test --grep @flaky
+
 # Interactive UI mode
 npm run test:ui
 
