@@ -1,10 +1,13 @@
-name: Playwright Tests
+name: Catawiki Automation
 
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
 
 jobs:
   smoke:
@@ -163,3 +166,53 @@ jobs:
           name: auth-allure-results
           path: allure-results/
           retention-days: 14
+
+  allure-report:
+    name: Publish Allure Report
+    needs: [regression, a11y]
+    if: always() && (needs.regression.result == 'success' || needs.regression.result == 'failure') && (needs.a11y.result == 'success' || needs.a11y.result == 'failure')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-allure-results'
+          path: allure-results
+          merge-multiple: true
+
+      - name: Setup Node for Allure CLI
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate Allure report
+        run: |
+          npm install -g allure-commandline
+          allure generate allure-results -o allure-report --clean
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: allure-report
+    if: always() && needs.allure-report.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -74,7 +74,6 @@ export class LotPage {
 
   /**
    * Returns a locator for the seconds-precision countdown timer
-   * (the <time> element in the sticky section showing "13h 31m 07s").
    */
   getLiveCountdownLocator(): Locator {
     return this.page.getByText('Closes in').locator('..').locator('time').first();
@@ -90,8 +89,6 @@ export class LotPage {
   }
 
   async getBidOptions(): Promise<BidOptions> {
-    // Suggested bid buttons have accessible names like "€ 40", "€ 42", "€ 44"
-    // They appear twice (main sidebar + sticky footer) — take the first set
     const suggestedBidButtons = this.page.getByRole('button', { name: /^€\s+\d+$/ });
 
     await suggestedBidButtons.first().waitFor({ state: 'visible', timeout: 10_000 });
@@ -110,7 +107,7 @@ export class LotPage {
       const placeholder = await bidInput.getAttribute('placeholder') ?? '';
       minimumBid = parseCurrencyToNumber(placeholder);
     } catch {
-      // Minimum bid not always parseable
+   
     }
 
     const uniqueAmounts = [...new Set(suggestedAmounts)].sort((a, b) => a - b);
