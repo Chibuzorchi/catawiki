@@ -8,6 +8,7 @@ import { logger } from '../utils/helpers';
  *   @smoke     — TC-001 (must-pass critical path)
  *   @sanity    — TC-002 (basic page health)
  *   @regression — TC-003–006 (deeper edge cases)
+ *   @flaky      — TC-006 (browser back; skipped in CI due to Akamai)
  */
 
 test.describe('Search Functionality', () => {
@@ -106,20 +107,10 @@ test.describe('Search Functionality', () => {
   });
 
 
-  test('TC-006 | Browser back from lot page preserves search results @flaky @regression', async ({
+  test('TC-006 | Browser back from lot page preserves search results @regression @flaky', async ({
     homePage, searchResultsPage, lotPage, page,
   }) => {
     await homePage.goto();
-
-    // If CDN blocked the page, search input never appears — skip early with clear feedback
-    const searchInput = page.getByRole('combobox', { name: 'Search for brand, model,' }).first();
-    try {
-      await searchInput.waitFor({ state: 'visible', timeout: 8_000 });
-    } catch {
-      logger.info('TC-006 skipped: homepage search input not visible (likely Akamai block). Run locally or retry.');
-      test.skip(true, 'Homepage blocked or search input not visible — likely Akamai rate limit');
-    }
-
     await homePage.search('train');
     await searchResultsPage.waitForResults();
 
