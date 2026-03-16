@@ -67,16 +67,19 @@ export class LotPage {
   }
 
   async getClosingTime(): Promise<string> {
-    const timer = this.page.getByTestId('timer-lot-count-down').first();
+    const timer = this.page.getByTestId('lot-bidding-counter').first();
     await expect(timer).toBeVisible();
     return (await timer.innerText()).trim();
   }
 
   /**
-   * Returns a locator for the seconds-precision countdown timer
+   * Returns a locator for the seconds column of the countdown timer
    */
   getLiveCountdownLocator(): Locator {
-    return this.page.getByText('Closes in').locator('..').locator('time').first();
+    return this.page
+      .getByTestId('lot-bidding-counter')
+      .locator('[data-sentry-component="AnimatedNumber"]')
+      .last();
   }
 
   async getLotDetails(): Promise<LotDetails> {

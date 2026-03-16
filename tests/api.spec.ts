@@ -32,7 +32,7 @@ async function navigateToSecondLot(page: import('@playwright/test').Page) {
 
 test.describe('API — Cross-Layer Validation', () => {
 
-  test('TC-008 | Lot bids API returns valid response for the displayed lot @sanity', async ({ page }) => {
+  test('TC-011 | Lot bids API returns valid response for the displayed lot @sanity', async ({ page }) => {
     // Set up the bids interceptor before any navigation
     const capturedBidsResponses: Array<{ url: string; status: number; body: unknown }> = [];
 
@@ -72,7 +72,7 @@ test.describe('API — Cross-Layer Validation', () => {
   });
 
 
-  test('TC-009 | UI title matches the lot data served by the API @sanity', async ({ page }) => {
+  test('TC-012 | UI title matches the lot data served by the API @sanity', async ({ page }) => {
     // Capture all /buyer/api/v1/lots responses during navigation
     const capturedLotResponses: Array<{ url: string; body: Record<string, unknown> }> = [];
 
@@ -115,7 +115,7 @@ test.describe('API — Cross-Layer Validation', () => {
   });
 
 
-  test('TC-010 | UI current bid matches bids API for the same lot @sanity', async ({ page }) => {
+  test('TC-013 | UI current bid matches bids API for the same lot @sanity', async ({ page }) => {
     const capturedBids: Array<{ url: string; body: Record<string, unknown> }> = [];
 
     page.on('response', async (response) => {
@@ -161,7 +161,7 @@ test.describe('API — Cross-Layer Validation', () => {
   });
 
 
-  test('TC-011 | Batch lots API schema validation — fields from network interception @sanity', async ({ page }) => {
+  test('TC-014 | Batch lots API schema validation — fields from network interception @sanity', async ({ page }) => {
     const capturedBatchResponses: Array<Record<string, unknown>> = [];
 
     page.on('response', async (response) => {
@@ -211,7 +211,7 @@ test.describe('API — Cross-Layer Validation', () => {
   });
 
 
-  test('TC-012 | Seller lots API fires on lot page with valid structure @sanity', async ({ page }) => {
+  test('TC-015 | Seller lots API fires on lot page with valid structure @sanity', async ({ page }) => {
     const capturedSellerResponses: Array<Record<string, unknown>> = [];
 
     page.on('response', async (response) => {

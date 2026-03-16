@@ -22,7 +22,7 @@ test.describe('Authenticated Flows', () => {
 
   test.skip(!EMAIL || !PASSWORD, 'Skipped — set CATAWIKI_EMAIL and CATAWIKI_PASSWORD to run');
 
-  test('TC-015 | Favourite count increments after login and persists after logout @auth', async ({
+  test('TC-018 | Favourite count increments after login and persists after logout @auth', async ({
     homePage, searchResultsPage, lotPage, page,
   }) => {
     const loginPage = new LoginPage(page);
@@ -78,7 +78,7 @@ test.describe('Authenticated Flows', () => {
   });
 
 
-  test('TC-016 | Placing a bid updates current bid and persists after logout @auth', async ({
+  test('TC-019 | Placing a bid updates current bid and persists after logout @auth', async ({
     homePage, searchResultsPage, lotPage, page,
   }) => {
     const loginPage = new LoginPage(page);

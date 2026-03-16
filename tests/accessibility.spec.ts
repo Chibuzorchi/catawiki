@@ -6,12 +6,12 @@ import { logger } from '../utils/helpers';
  * Accessibility Test Suite — WCAG 2.1 AA compliance audits.
  *
  * Tags:
- *   @a11y — TC-013, TC-014
+ *   @a11y — TC-016, TC-017
  */
 
 test.describe('Accessibility', () => {
 
-  test('TC-013 | Home page WCAG 2.1 AA audit @a11y', async ({ homePage, page }) => {
+  test('TC-016 | Home page WCAG 2.1 AA audit @a11y', async ({ homePage, page }) => {
     await homePage.goto();
 
     const results = await new AxeBuilder({ page })
@@ -32,7 +32,7 @@ test.describe('Accessibility', () => {
   });
 
 
-  test('TC-014 | Lot page WCAG 2.1 AA audit @a11y', async ({
+  test('TC-017 | Lot page WCAG 2.1 AA audit @a11y', async ({
     homePage, searchResultsPage, page,
   }) => {
     await homePage.goto();
